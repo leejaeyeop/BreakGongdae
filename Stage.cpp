@@ -7,7 +7,7 @@
 //
 
 #include "Stage.h"
-#define GROUND 100
+#define GROUND 50
 
 Scene* Stage::createScene()
 {
@@ -23,14 +23,15 @@ Scene* Stage::createScene()
     scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     scene->getPhysicsWorld()->setGravity(gravity);
     
-    auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width,visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 6);
+    auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width,visibleSize.height*10-GROUND), PhysicsMaterial(0.,0.,0.),1);
     auto edgeNode = Node::create();
-    edgeNode->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+    edgeNode->setPosition(Point(visibleSize.width / 2, visibleSize.height*5+GROUND/2));
     edgeNode->setPhysicsBody(body);
     scene->addChild(edgeNode);
     
     auto layer = Stage::create();
     layer->setPhyWorld(scene->getPhysicsWorld());
+    layer->setContentSize(Size(visibleSize.width,visibleSize.height*10));
     
     scene->addChild(layer);
     
@@ -43,17 +44,21 @@ bool Stage::init()
     {
         return false;
     }
-    visibleSize=Director::getInstance()->getVisibleSize();
+    //visibleSize=Director::getInstance()->getVisibleSize();
     auto keylistener = EventListenerKeyboard::create();
     keylistener->onKeyPressed = CC_CALLBACK_2(Stage::onKeyPressed, this);
     keylistener->onKeyReleased = CC_CALLBACK_2(Stage::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keylistener, this);
     
-    Sprite *character = Sprite::create("grossini_dance_05.png");
-    character->setPosition(visibleSize.width/2, GROUND+character->getContentSize().height/2);
-    auto material = PhysicsMaterial(0.1f, 0.0f, 0.1f);
+    auto *background=Sprite::create("stage_background.png");
+    background->setContentSize(Size(visibleSize.width,this->getContentSize().height));
+    background->setPosition(visibleSize.width/2,this->getContentSize().height/2);
+    addChild(background);
     
-    auto body = PhysicsBody::createBox(character->getContentSize(),material,Vec2(0,-GROUND));
+    auto *character = Sprite::create("grossini_dance_05.png");
+    character->setPosition(visibleSize.width/2, GROUND+character->getContentSize().height/2);
+    auto material = PhysicsMaterial(0., 0., 0.);
+    auto body = PhysicsBody::createBox(character->getContentSize(),material,Vec2(0,0));
     character->setPhysicsBody(body);
     addChild(character);
     character->setTag(11);
