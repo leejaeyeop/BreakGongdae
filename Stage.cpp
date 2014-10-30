@@ -30,7 +30,7 @@ Scene* Stage::createScene()
     scene->addChild(edgeNode);
     
     auto layer = Stage::create();
-    layer->setPhyWorld(scene->getPhysicsWorld());
+    //layer->setPhyWorld(scene->getPhysicsWorld());
     layer->setContentSize(Size(visibleSize.width,visibleSize.height*10));
     
     scene->addChild(layer);
@@ -65,33 +65,38 @@ bool Stage::init()
     
     return true;
 }
-Stage::~Stage() {
+/*Stage::~Stage() {
     
-}
+}*/
 
 void Stage::jump_scheduler(float time) {
     auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
     if(character->getPosition().y >=visibleSize.height/2) {
+        //캐릭터가 화면의 절반 이상 높이로 올라가려하면 this를 내려서 캐릭터가 화면을 벗어나지 못하게 한다
         this->setPosition(Vec2(0,-character->getPosition().y+visibleSize.height/2));
     }
     else if(character->getPosition().y<=GROUND+character->getContentSize().height/2+1) {
-        //character->stopActionByTag(JUMP_TAG);
+        //바닥에 닿으면 캐릭터를 강제로 멈추게 함
         character->getPhysicsBody()->setAngularVelocity(0.);
         character->getPhysicsBody()->setVelocity(Vec2(0.,0.));
         character->setRotation(0);
         character->setPosition(Vec2(posCharacter[cntofPosCharacter],GROUND+character->getContentSize().height/2));
+        
+        //언스케줄
         unschedule(schedule_selector(Stage::jump_scheduler));
     }
     else {
+        //캐릭터가 높이 올라가지 않으면 this 는 가만히 있음
         this->setPosition(0,0);
+        //캐릭터가 흔들리지 않게 함
         character->setRotation(0);
         character->getPhysicsBody()->setAngularVelocity(0.);
     }
 }
 
 void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
-    
     auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
+    
     switch (keyCode){
             
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
@@ -111,6 +116,7 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
             auto act=JumpBy::create(1, Vec2(0, 1000), 1000, 1);
             character->runAction(act);
             
+            //점프 스케줄러가 없으면 등록
             if(!isScheduled(schedule_selector(Stage::jump_scheduler)))
                 schedule(schedule_selector(Stage::jump_scheduler));
             break;

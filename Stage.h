@@ -25,8 +25,8 @@ public:
 
     CREATE_FUNC(Stage);
     
-    void setPhyWorld(PhysicsWorld* world){ m_world = world; }
-    ~Stage();
+    //void setPhyWorld(PhysicsWorld* world){ m_world = world; }
+    //~Stage();
     //virtual bool onTouchBegan(Touch *touch, Event * event);
     //virtual void onTouchEnded(Touch *touch, Event * event);
     
@@ -35,16 +35,16 @@ protected:
     static const int GROUND = 50;
     static const int CHARACTER_TAG = 11;
     static Size visibleSize;
-    PhysicsWorld* m_world;
+    //PhysicsWorld* m_world;
     //Sprite *character;
     
     //onContact Listener
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void jump_scheduler(float time);
+    void jump_scheduler(float time); //점프하면 반복적으로 호출되는 함수
 private:
-    static float posCharacter[3];
-    static int cntofPosCharacter;
+    static float posCharacter[3]; //캐릭터의 x좌표로 가능한 것들
+    static int cntofPosCharacter; //캐릭터가 현재 어디 있는지 posCharacter의 index로 나타냄. 처음은 중앙이므로 1
 };
 
 Size Stage::visibleSize=Director::getInstance()->getVisibleSize();
