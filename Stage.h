@@ -13,6 +13,7 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
+
 class Stage : public LayerColor
 {
 public:
@@ -21,38 +22,34 @@ public:
     
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
-    /*
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
-    */
-    // implement the "static create()" method manually
+
     CREATE_FUNC(Stage);
     
     void setPhyWorld(PhysicsWorld* world){ m_world = world; }
-    
+    ~Stage();
     //virtual bool onTouchBegan(Touch *touch, Event * event);
     //virtual void onTouchEnded(Touch *touch, Event * event);
     
 
-    
-    //void doAction(Ref* sender);
-    //void addNewSpriteAtPosition(Point p);
-
 protected:
+    static const int GROUND = 50;
+    static const int CHARACTER_TAG = 11;
     static Size visibleSize;
     PhysicsWorld* m_world;
-    Sprite* makeGrossini(Vec2 point);
-    //onContact Listener
+    //Sprite *character;
     
+    //onContact Listener
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void jump_scheduler(float time);
 private:
     static float posCharacter[3];
+    static int cntofPosCharacter;
 };
 
 Size Stage::visibleSize=Director::getInstance()->getVisibleSize();
 float Stage::posCharacter[3]={Stage::visibleSize.width/2-Stage::visibleSize.width/3,Stage::visibleSize.width/2,Stage::visibleSize.width/2+Stage::visibleSize.width/3};
+int Stage::cntofPosCharacter=1;
 
 
 #endif /* defined(__BreakGongDae__Stage__) */

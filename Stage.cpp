@@ -7,7 +7,7 @@
 //
 
 #include "Stage.h"
-#define GROUND 50
+
 
 Scene* Stage::createScene()
 {
@@ -51,59 +51,72 @@ bool Stage::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keylistener, this);
     
     auto *background=Sprite::create("stage_background.png");
-    background->setContentSize(Size(visibleSize.width,this->getContentSize().height));
-    background->setPosition(visibleSize.width/2,this->getContentSize().height/2);
+    background->setContentSize(Size(visibleSize.width,visibleSize.height*10));
+    background->setPosition(visibleSize.width/2,visibleSize.height*5);
     addChild(background);
     
-    auto *character = Sprite::create("grossini_dance_05.png");
+    auto character = Sprite::create("grossini_dance_05.png");
     character->setPosition(visibleSize.width/2, GROUND+character->getContentSize().height/2);
-    auto material = PhysicsMaterial(0., 0., 0.);
-    auto body = PhysicsBody::createBox(character->getContentSize(),material,Vec2(0,0));
+    auto body = PhysicsBody::createBox(character->getContentSize(),PhysicsMaterial(0., 0., 0.),Vec2(0,0));
+    body->setAngularVelocityLimit(0);
     character->setPhysicsBody(body);
     addChild(character);
-    character->setTag(11);
+    character->setTag(CHARACTER_TAG);
     
     return true;
 }
+Stage::~Stage() {
+    
+}
 
 void Stage::jump_scheduler(float time) {
-    auto sp = (Sprite*)getChildByTag(11);
-    if(sp->getPosition().y >=visibleSize.height/2) {
-        this->setPosition(Vec2(0,-sp->getPosition().y+visibleSize.height/2));
+    auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
+    if(character->getPosition().y >=visibleSize.height/2) {
+        this->setPosition(Vec2(0,-character->getPosition().y+visibleSize.height/2));
+    }
+    else if(character->getPosition().y<=GROUND+character->getContentSize().height/2+1) {
+        //character->stopActionByTag(JUMP_TAG);
+        character->getPhysicsBody()->setAngularVelocity(0.);
+        character->getPhysicsBody()->setVelocity(Vec2(0.,0.));
+        character->setRotation(0);
+        character->setPosition(Vec2(posCharacter[cntofPosCharacter],GROUND+character->getContentSize().height/2));
+        unschedule(schedule_selector(Stage::jump_scheduler));
     }
     else {
         this->setPosition(0,0);
+        character->setRotation(0);
+        character->getPhysicsBody()->setAngularVelocity(0.);
     }
 }
 
 void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
-    static int cntofPosCharacter=0;
+    
+    auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
     switch (keyCode){
             
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
         {
-            auto sp = (Sprite*)getChildByTag(11);
             if(cntofPosCharacter!=0)
-                sp->setPosition(posCharacter[--cntofPosCharacter],sp->getPosition().y);
+                character->setPosition(posCharacter[--cntofPosCharacter],character->getPosition().y);
             break;
         }
         case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
         {
-            auto sp = (Sprite*)getChildByTag(11);
             if(cntofPosCharacter!=2)
-                sp->setPosition(posCharacter[++cntofPosCharacter],sp->getPosition().y);
+                character->setPosition(posCharacter[++cntofPosCharacter],character->getPosition().y);
             break;
         }
         case EventKeyboard::KeyCode::KEY_UP_ARROW:
         {
-            auto act = JumpBy::create(1, Vec2(0, 300), 300, 1);
-            auto sp = (Sprite*)getChildByTag(11);
-            sp->runAction(act);
-            schedule(schedule_selector(Stage::jump_scheduler));
+            auto act=JumpBy::create(1, Vec2(0, 1000), 1000, 1);
+            character->runAction(act);
+            
+            if(!isScheduled(schedule_selector(Stage::jump_scheduler)))
+                schedule(schedule_selector(Stage::jump_scheduler));
             break;
         }
         case EventKeyboard::KeyCode::KEY_X: {
-            auto sp = (Sprite*)getChildByTag(11);
+            //auto sp = (Sprite*)getChildByTag(CHARACTER_TAG);
             
             Vector<SpriteFrame*> animFrames(15);
             char str[100] = { 0 };
@@ -117,7 +130,7 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
             auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
             auto animate = Animate::create(animation);
             
-            sp->runAction(animate);
+            character->runAction(animate);
         }
         default:
             break;
