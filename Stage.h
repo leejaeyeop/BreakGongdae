@@ -28,34 +28,31 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(Stage);
     
-    
-    
     void setPhyWorld(PhysicsWorld* world){ m_world = world; }
     
-    virtual bool onTouchBegan(Touch *touch, Event * event);
-    virtual void onTouchEnded(Touch *touch, Event * event);
+    //virtual bool onTouchBegan(Touch *touch, Event * event);
+    //virtual void onTouchEnded(Touch *touch, Event * event);
     
-    virtual void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    virtual void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
-    void jump_scheduler(float time);
     
-    void doAction(Ref* sender);
-    void addNewSpriteAtPosition(Point p);
+    //void doAction(Ref* sender);
+    //void addNewSpriteAtPosition(Point p);
 
 protected:
-    
+    static Size visibleSize;
     PhysicsWorld* m_world;
     Sprite* makeGrossini(Vec2 point);
-    //Key Input Listener
     //onContact Listener
     
+    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void jump_scheduler(float time);
 private:
-    Size visibleSize;
-    //물리공간
-    //캐릭터
-    //건물
+    static float posCharacter[3];
 };
+
+Size Stage::visibleSize=Director::getInstance()->getVisibleSize();
+float Stage::posCharacter[3]={Stage::visibleSize.width/2-Stage::visibleSize.width/3,Stage::visibleSize.width/2,Stage::visibleSize.width/2+Stage::visibleSize.width/3};
 
 
 #endif /* defined(__BreakGongDae__Stage__) */
