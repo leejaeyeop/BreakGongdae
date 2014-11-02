@@ -2,15 +2,15 @@
 //  Building.cpp
 //  BreakGongDae
 //
-//  Created by À¯Á¤¹Î on 2014. 11. 1..
+//  Created by ìœ ì •ë¯¼ on 2014. 11. 1..
 //
 //
 
 #include "Building.h"
 
-Building* Building::create(/*³Ö¾î¾ßÇÔ*/)
+Building* Building::create(/*ë„£ì–´ì•¼í•¨*/)
 {
-    Building *pRet = new Building(/*³Ö¾î¾ßÇÔ*/);
+    Building *pRet = new Building(/*ë„£ì–´ì•¼í•¨*/);
     if (pRet && pRet->init())
     {
         pRet->autorelease();

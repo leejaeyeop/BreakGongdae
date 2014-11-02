@@ -2,10 +2,10 @@
 //  Stage.h
 //  BreakGongDae
 //
-//  Created by À¯Á¤¹Î on 2014. 10. 24..
+//  Created by ìœ ì •ë¯¼ on 2014. 10. 24..
 //
 //
-//  Revised by ÀÌ»ó¹Î on 2014. 10. 28..
+//  Revised by ì´ìƒë¯¼ on 2014. 10. 28..
 
 #ifndef __BreakGongDae__Stage__
 #define __BreakGongDae__Stage__
@@ -60,13 +60,13 @@ protected:
     //onContact Listener
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void jump_scheduler(float time); //Á¡ÇÁÇÏ¸é ¹İº¹ÀûÀ¸·Î È£ÃâµÇ´Â ÇÔ¼ö
+    void jump_scheduler(float time); //ì í”„í•˜ë©´ ë°˜ë³µì ìœ¼ë¡œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
 	//void skill_blocking();
 	bool onContactBegin(PhysicsContact& contact);
 
 private:
-    static float posCharacter[3]; //Ä³¸¯ÅÍÀÇ xÁÂÇ¥·Î °¡´ÉÇÑ °Íµé
-    static int cntofPosCharacter; //Ä³¸¯ÅÍ°¡ ÇöÀç ¾îµğ ÀÖ´ÂÁö posCharacterÀÇ index·Î ³ªÅ¸³¿. Ã³À½Àº Áß¾ÓÀÌ¹Ç·Î 1
+    static float posCharacter[3]; //ìºë¦­í„°ì˜ xì¢Œí‘œë¡œ ê°€ëŠ¥í•œ ê²ƒë“¤
+    static int cntofPosCharacter; //ìºë¦­í„°ê°€ í˜„ì¬ ì–´ë”” ìˆëŠ”ì§€ posCharacterì˜ indexë¡œ ë‚˜íƒ€ëƒ„. ì²˜ìŒì€ ì¤‘ì•™ì´ë¯€ë¡œ 1
 	friend class Grosss;
 	Grosss g;
 };

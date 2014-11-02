@@ -2,9 +2,9 @@
 //  Stage.cpp
 //  BreakGongDae
 //
-//  Created by À¯Á¤¹Î on 2014. 10. 24..
+//  Created by æ”¿èˆ›è‚¯ on 2014. 10. 24..
 //...
-//¤·¤±¤¤¤·¤¤¤±¤·¤¤¤·
+//ã—ã‘ã„ã—ã„ã‘ã—ã„ã—
 
 #include "Stage.h"
 #include "Building.h"
@@ -93,7 +93,7 @@ bool Stage::init()
 	auto block_body = PhysicsBody::createBox(block->getContentSize() / 10, PhysicsMaterial(0., 0., 0.), Vec2(0, 0));
 	block_body->setAngularVelocityLimit(0);
 
-	// ¹Ù´Ú¿¡ ±ò¸²
+	// éƒŠéŸ“æ‹­ è–—é¡•
 	block_body->setCategoryBitmask(0x04);	// 0100
 	block_body->setContactTestBitmask(0x08); // 1000
 	block_body->setCollisionBitmask(0x06);	// 0110
@@ -116,23 +116,23 @@ bool Stage::init()
 void Stage::jump_scheduler(float time) {
     auto character = g.getgros();
     if(character->getPosition().y >=visibleSize.height/2) {
-        //Ä³¸¯ÅÍ°¡ È­¸éÀÇ Àý¹Ý ÀÌ»ó ³ôÀÌ·Î ¿Ã¶ó°¡·ÁÇÏ¸é this¸¦ ³»·Á¼­ Ä³¸¯ÅÍ°¡ È­¸éÀ» ¹þ¾î³ªÁö ¸øÇÏ°Ô ÇÑ´Ù
+        //è¶é£æ–—äºœ é‰¢æªŽç¨Ž ç®­é‹¼ æˆšé›Œ æ ªæˆšç¨½ è‡£è™žäºœå½¢é¦¬æªŽ thisç ” éŽ§å½¢è¾ž è¶é£æ–—äºœ é‰¢æªŽè– è¾¼å¬¢èŸ¹èµ° å…¬é¦¬æƒŸ å»ƒé™¥
         this->setPosition(Vec2(0,-character->getPosition().y+visibleSize.height/2));
     }
     else if(character->getPosition().y<=GROUND+character->getContentSize().height/2+1) {
-        //¹Ù´Ú¿¡ ´êÀ¸¸é Ä³¸¯ÅÍ¸¦ °­Á¦·Î ¸ØÃß°Ô ÇÔ
+        //éƒŠéŸ“æ‹­ é¡˜ç”ŸæªŽ è¶é£æ–—ç ” æ‚ªè–¦ç¨½ èª‡è“„æƒŸ æ•—
         character->getPhysicsBody()->setAngularVelocity(0.);
         character->getPhysicsBody()->setVelocity(Vec2(0.,0.));
         character->setRotation(0);
         character->setPosition(Vec2(posCharacter[cntofPosCharacter],GROUND+character->getContentSize().height/2));
         
-        //¾ð½ºÄÉÁÙ
+        //æƒ…ä»€è¿½åŒ
         unschedule(schedule_selector(Stage::jump_scheduler));
     }
     else {
-        //Ä³¸¯ÅÍ°¡ ³ôÀÌ ¿Ã¶ó°¡Áö ¾ÊÀ¸¸é this ´Â °¡¸¸È÷ ÀÖÀ½
+        //è¶é£æ–—äºœ æ ªæˆš è‡£è™žäºœèµ° çœç”ŸæªŽ this æ¾— äºœå¹»å‚™ èµ¤è£½
         this->setPosition(0,0);
-        //Ä³¸¯ÅÍ°¡ Èçµé¸®Áö ¾Ê°Ô ÇÔ
+        //è¶é£æ–—äºœ æ³Œç´šè»’èµ° çœæƒŸ æ•—
         character->setRotation(0);
         character->getPhysicsBody()->setAngularVelocity(0.);
     }
@@ -166,14 +166,14 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
 				auto act = JumpBy::create(1, Vec2(0, 1000), 1000, 1);
 				character->runAction(act);
 
-				//Á¡ÇÁ ½ºÄÉÁÙ·¯°¡ ¾øÀ¸¸é µî·Ï
+				//ç¹Šè¦— ä»€è¿½åŒå›äºœ è’¸ç”ŸæªŽ åŽ»ç³»
 				if (!isScheduled(schedule_selector(Stage::jump_scheduler)))
 					schedule(schedule_selector(Stage::jump_scheduler));
 					break;
 				}
 				break;
         }
-		// ºÎ¼ö±â
+		// æŽ¡å‘ªå¥„
 		case EventKeyboard::KeyCode::KEY_Z:
 		{ 
 			if (g.getattack() == N)
@@ -201,7 +201,7 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
 
 			break;
 		}
-		// ¸·±â
+		// åŽ³å¥„
 		case EventKeyboard::KeyCode::KEY_X:
 		{
 			character->getPhysicsBody()->setCategoryBitmask(0x04);// 0010

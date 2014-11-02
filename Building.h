@@ -2,7 +2,7 @@
 //  Building.h
 //  BreakGongDae
 //
-//  Created by À¯Á¤¹Î on 2014. 11. 1..
+//  Created by ìœ ì •ë¯¼ on 2014. 11. 1..
 //
 //
 
@@ -28,8 +28,8 @@ class Building : Layer {
 private:
     queue<Block> blocks;
 public:
-    //Constructor(¿¡¼­ Layer::init È£Ãâ)
-    static Building* create(/*³Ö¾î¾ßÇÔ*/);
+    //Constructor(ì—ì„œ Layer::init í˜¸ì¶œ)
+    static Building* create(/*ë„£ì–´ì•¼í•¨*/);
     void setPositionOfBottom();
     Point getPositionOfTop();
     void attack();
