@@ -13,6 +13,31 @@ Size Stage::visibleSize = Director::getInstance()->getVisibleSize();
 float Stage::posCharacter[3] = { Stage::visibleSize.width / 2 - Stage::visibleSize.width / 3, Stage::visibleSize.width / 2, Stage::visibleSize.width / 2 + Stage::visibleSize.width / 3 };
 int Stage::cntofPosCharacter = 1;
 
+Grosss::Grosss()
+{
+	grosinit();
+	s = G;
+	a = N;
+}
+
+void Grosss::grosinit() {
+	gros = Sprite::create("grossini.png");
+	gros->setPosition(Stage::visibleSize.width / 2, Stage::GROUND + gros->getContentSize().height / 2);
+	auto body = PhysicsBody::createBox(gros->getContentSize(), PhysicsMaterial(1., 0., 0.), Vec2(0, 0));
+	body->setAngularVelocityLimit(0);
+	body->setCategoryBitmask(0x01); // 0001
+	body->setContactTestBitmask(0x04); // 0100
+	body->setCollisionBitmask(0x03); // 0011
+	gros->setPhysicsBody(body);
+}
+
+Sprite* Grosss::getgros(){ return gros; }
+state Grosss::getstate(){ return s; }
+void Grosss::setstate(state ss){ s = ss; }
+attack Grosss::getattack(){ return a; }
+void Grosss::setattack(attack aa){ a = aa; }
+
+
 Scene* Stage::createScene()
 {
     visibleSize=Director::getInstance()->getVisibleSize();
@@ -59,16 +84,9 @@ bool Stage::init()
     background->setPosition(visibleSize.width/2,visibleSize.height*5);
     addChild(background);
     
-    auto *character = Sprite::create("grossini.png");
-    character->setPosition(visibleSize.width/2, GROUND+character->getContentSize().height/2);
-    auto body = PhysicsBody::createBox(character->getContentSize(),PhysicsMaterial(1., 0., 0.),Vec2(0,0));
-    body->setAngularVelocityLimit(0);
-	body->setCategoryBitmask(0x01); // 0001
-	body->setContactTestBitmask(0x04); // 0100
-	body->setCollisionBitmask(0x03); // 0011
-    character->setPhysicsBody(body);
-    addChild(character);
-    character->setTag(CHARACTER_TAG);
+
+	addChild(g.getgros());
+	g.setTag(CHARACTER_TAG);
 
 	auto *block = Sprite::create("block.png");
 	block->setScale(0.1, 0.1);
@@ -96,7 +114,7 @@ bool Stage::init()
 }*/
 
 void Stage::jump_scheduler(float time) {
-    auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
+    auto character = g.getgros();
     if(character->getPosition().y >=visibleSize.height/2) {
         //캐릭터가 화면의 절반 이상 높이로 올라가려하면 this를 내려서 캐릭터가 화면을 벗어나지 못하게 한다
         this->setPosition(Vec2(0,-character->getPosition().y+visibleSize.height/2));
@@ -125,7 +143,7 @@ void Stage::skill_blocking(){
 
 }*/
 void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
-    auto character = (Sprite*)getChildByTag(CHARACTER_TAG);
+    auto character = g.getgros();
     
     switch (keyCode){
             
@@ -143,33 +161,44 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
         }
         case EventKeyboard::KeyCode::KEY_UP_ARROW:
         {
-            auto act=JumpBy::create(1, Vec2(0, 1000), 1000, 1);
-            character->runAction(act);
-            
-            //점프 스케줄러가 없으면 등록
-            if(!isScheduled(schedule_selector(Stage::jump_scheduler)))
-                schedule(schedule_selector(Stage::jump_scheduler));
-            break;
+			if (g.getstate() == G){
+				g.setstate(AIR);
+				auto act = JumpBy::create(1, Vec2(0, 1000), 1000, 1);
+				character->runAction(act);
+
+				//점프 스케줄러가 없으면 등록
+				if (!isScheduled(schedule_selector(Stage::jump_scheduler)))
+					schedule(schedule_selector(Stage::jump_scheduler));
+					break;
+				}
+				break;
         }
 		// 부수기
 		case EventKeyboard::KeyCode::KEY_Z:
-		{
-			//auto sp = (Sprite*)getChildByTag(CHARACTER_TAG);
-			Vector<SpriteFrame*> animFrames(15);
-			char str[100] = { 0 };
-			for (int i = 1; i < 15; i++){
-				sprintf(str, "grossini_dance_%02d.png", i);
-				auto frame = SpriteFrame::create(str, Rect(0, 0, 80, 115));
+		{ 
+			if (g.getattack() == N)
+			{
+				g.setattack(Y);
+				Vector<SpriteFrame*> animFrames(15);
+				char str[100] = { 0 };
+				for (int i = 1; i < 15; i++){
+					sprintf(str, "grossini_dance_%02d.png", i);
+					auto frame = SpriteFrame::create(str, Rect(0, 0, 80, 115));
+					animFrames.pushBack(frame);
+				}
+				auto frame = SpriteFrame::create("grossini_dance_05.png", Rect(0, 0, 80, 115));
 				animFrames.pushBack(frame);
+				auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
+				auto animate = Animate::create(animation);
+
+				character->runAction(animate);
+
+				character->getPhysicsBody()->setCategoryBitmask(0x08);// 0010
+				character->getPhysicsBody()->setContactTestBitmask(0x04); // 1000
+				character->getPhysicsBody()->setCollisionBitmask(0x06);	// 0001
+
 			}
-			auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
-			auto animate = Animate::create(animation);
 
-			character->runAction(animate);
-
-			character->getPhysicsBody()->setCategoryBitmask(0x08);// 0010
-			character->getPhysicsBody()->setContactTestBitmask(0x04); // 1000
-			character->getPhysicsBody()->setCollisionBitmask(0x06);	// 0001
 			break;
 		}
 		// 막기
@@ -187,19 +216,30 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
 
 void Stage::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    
+	auto character = g.getgros();
+	
+	switch (keyCode){
+		case EventKeyboard::KeyCode::KEY_Z:{
+
+			character->getPhysicsBody()->setCategoryBitmask(0x01);// 0010
+			character->getPhysicsBody()->setContactTestBitmask(0x04); // 1000
+			character->getPhysicsBody()->setCollisionBitmask(0x03);	// 0001
+			g.setattack(N);
+		}
+	}
 }
 
 bool Stage::onContactBegin(PhysicsContact& contact)
 {
+	auto character = g.getgros();
+
 	auto sp1 = (Sprite*)contact.getShapeA()->getBody()->getNode();
 	int tag1 = sp1->getTag();
 
 	auto sp2 = (Sprite*)contact.getShapeB()->getBody()->getNode();
 	int tag2 = sp2->getTag();
-	removeChild(sp2, true);
-
-	log("onContactBegin: %d - %d", tag1, tag2);
-
+	
+	removeChild(sp1, true);
+	
 	return true;
 }

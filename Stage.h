@@ -67,8 +67,8 @@ protected:
 private:
     static float posCharacter[3]; //캐릭터의 x좌표로 가능한 것들
     static int cntofPosCharacter; //캐릭터가 현재 어디 있는지 posCharacter의 index로 나타냄. 처음은 중앙이므로 1
+	friend class Grosss;
+	Grosss g;
 };
-
-class 
 
 #endif /* defined(__BreakGongDae__Stage__) */
