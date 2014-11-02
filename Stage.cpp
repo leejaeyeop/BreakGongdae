@@ -4,7 +4,7 @@
 //
 //  Created by 政舛肯 on 2014. 10. 24..
 //...
-//
+//しけいしいけしいし
 
 #include "Stage.h"
 #include "Building.h"
