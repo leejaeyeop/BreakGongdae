@@ -4,7 +4,7 @@
 //
 //  Created by 政舛肯 on 2014. 10. 24..
 //
-//
+//	푸시푸시베이베푸시푸시베이베
 
 #include "Stage.h"
 #include "Building.h"
