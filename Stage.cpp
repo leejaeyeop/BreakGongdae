@@ -3,8 +3,8 @@
 //  BreakGongDae
 //
 //  Created by 政舛肯 on 2014. 10. 24..
-//...
-//しけいしいけしいし
+//
+//
 
 #include "Stage.h"
 #include "Building.h"
@@ -55,6 +55,7 @@ Scene* Stage::createScene()
     auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width,visibleSize.height*10-GROUND), PhysicsMaterial(0.,0.,0.),1);
     auto edgeNode = Node::create();
     edgeNode->setPosition(Point(visibleSize.width / 2, visibleSize.height*5+GROUND/2));
+    edgeNode->setTag(EDGE_TAG);
     edgeNode->setPhysicsBody(body);
     scene->addChild(edgeNode);
     
@@ -116,23 +117,26 @@ bool Stage::init()
 void Stage::jump_scheduler(float time) {
     auto character = g.getgros();
     if(character->getPosition().y >=visibleSize.height/2) {
-        //蝶遣斗亜 鉢檎税 箭鋼 戚雌 株戚稽 臣虞亜形馬檎 this研 鎧形辞 蝶遣斗亜 鉢檎聖 込嬢蟹走 公馬惟 廃陥
-        this->setPosition(Vec2(0,-character->getPosition().y+visibleSize.height/2));
+        //배경을 내림
+        this->setPosition(Vec2(this->getPosition().x,-character->getPosition().y+visibleSize.height/2));
+        this->getScene()->getChildByTag(EDGE_TAG)->setPosition(Vec2(this->getScene()->getChildByTag(EDGE_TAG)->getPosition().x,visibleSize.height*5+GROUND/2+(visibleSize.height/2-character->getPosition().y)));
     }
     else if(character->getPosition().y<=GROUND+character->getContentSize().height/2+1) {
-        //郊韓拭 願生檎 蝶遣斗研 悪薦稽 誇蓄惟 敗
+        //캐릭터 안흔들리게
         character->getPhysicsBody()->setAngularVelocity(0.);
         character->getPhysicsBody()->setVelocity(Vec2(0.,0.));
         character->setRotation(0);
         character->setPosition(Vec2(posCharacter[cntofPosCharacter],GROUND+character->getContentSize().height/2));
         
-        //情什追匝
+        //점프 중지
         unschedule(schedule_selector(Stage::jump_scheduler));
     }
     else {
-        //蝶遣斗亜 株戚 臣虞亜走 省生檎 this 澗 亜幻備 赤製
-        this->setPosition(0,0);
-        //蝶遣斗亜 泌級軒走 省惟 敗
+        //배경 안움직임
+        this->setPosition(this->getPosition().x,0);
+        
+        this->getScene()->getChildByTag(EDGE_TAG)->setPosition(this->getScene()->getChildByTag(EDGE_TAG)->getPosition().x,visibleSize.height*5+GROUND/2);
+        //안흔들리게
         character->setRotation(0);
         character->getPhysicsBody()->setAngularVelocity(0.);
     }
@@ -166,7 +170,7 @@ void Stage::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
 				auto act = JumpBy::create(1, Vec2(0, 1000), 1000, 1);
 				character->runAction(act);
 
-				//繊覗 什追匝君亜 蒸生檎 去系
+				//점프동작
 				if (!isScheduled(schedule_selector(Stage::jump_scheduler)))
 					schedule(schedule_selector(Stage::jump_scheduler));
 					break;

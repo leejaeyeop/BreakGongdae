@@ -52,7 +52,10 @@ public:
 protected:
     static const int GROUND = 50;
     static const int CHARACTER_TAG = 11;
-	static Size visibleSize;
+    static const int EDGE_TAG = 0;
+    
+    static Size visibleSize;
+    
 
 	//PhysicsWorld* m_world;
     //Sprite *character;
