@@ -2,7 +2,7 @@
 //  Stage.cpp
 //  BreakGongDae
 //
-//  Created by 政舛肯 on 2014. 10. 24..
+//  Created by 유정민 on 2014. 10. 24..
 //
 //
 
