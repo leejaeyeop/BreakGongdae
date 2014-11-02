@@ -36,9 +36,4 @@ public:
     virtual void applicationWillEnterForeground();
 };
 
-<<<<<<< HEAD
 #endif // _APP_DELEGATE_H_
-=======
-#endif // _APP_DELEGATE_H_
-
->>>>>>> 03a735b2bd71b7ff773cefb96ae1085319b33fc4
