@@ -6,6 +6,7 @@
 //
 //
 //  Revised by 이상민 on 2014. 10. 28..
+//	수정될까...
 
 #ifndef __BreakGongDae__Stage__
 #define __BreakGongDae__Stage__
